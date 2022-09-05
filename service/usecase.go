@@ -73,5 +73,21 @@ func (u AnswerUseCase) deleteAnswer(key string) error {
 	if err != nil {
 		return fmt.Errorf("error looking for the existing answer: %v", err)
 	}
-	return u.db.deleteAnswer(existingAnswer.Id.Hex())
+	err = u.db.deleteAnswer(existingAnswer.Id.Hex())
+	if err != nil {
+		return err
+	}
+	// and add the event
+	err = u.db.storeEvent(Event{
+		Type: Delete,
+		Data: Answer{
+			Id:    existingAnswer.Id,
+			Key:   key,
+			Value: existingAnswer.Value,
+		},
+	})
+	if err != nil {
+		return err
+	}
+	return nil
 }
