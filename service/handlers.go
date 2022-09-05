@@ -1,9 +1,6 @@
 package service
 
 import (
-	"encoding/json"
-	"io/ioutil"
-	"log"
 	"net/http"
 
 	"github.com/gorilla/mux"
@@ -63,13 +60,13 @@ func (srv *Service) answersHandler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func (srv *Service) answersFetchHandler(w http.ResponseWriter, r *http.Request) {
+func (srv *Service) answerByKeyHandler(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 
 	switch r.Method {
 	case http.MethodGet:
 		{
-			answer, err := srv.useCase.db.getAnswerByKey(vars["key"]) // ADAPT TO USECASE
+			answer, err := srv.useCase.getAnswerByKey(vars["key"])
 			if err != nil {
 				JSON(w, http.StatusNotFound, errorResponse{
 					Reason: err.Error(),
@@ -96,7 +93,7 @@ func (srv *Service) answersFetchHandler(w http.ResponseWriter, r *http.Request) 
 
 func (srv *Service) eventsHandler(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
-	events, err := srv.useCase.db.getEventsHistory(vars["key"]) // ADAPT TO USECASE
+	events, err := srv.useCase.getEventsHistory(vars["key"])
 	if err != nil {
 		JSON(w, http.StatusNotFound, errorResponse{
 			Reason: err.Error(),
@@ -104,21 +101,4 @@ func (srv *Service) eventsHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	JSON(w, http.StatusOK, events)
-}
-
-// utils
-func parseAnswerPayload(w http.ResponseWriter, r *http.Request) (*Answer, error) {
-	defer r.Body.Close()
-	r.Body = http.MaxBytesReader(w, r.Body, 1048576)
-	data, err := ioutil.ReadAll(r.Body)
-	if err != nil {
-		return nil, err
-	}
-	var answer Answer
-	err = json.Unmarshal(data, &answer)
-	if err != nil {
-		log.Println("The payload is not valid JSON")
-		return nil, err
-	}
-	return &answer, nil
 }

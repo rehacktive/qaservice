@@ -6,6 +6,16 @@ import (
 	"log"
 )
 
+type UseCase interface {
+	createAnswer(a Answer) (string, error)
+	updateAnswer(a Answer) error
+	deleteAnswer(key string) error
+	getAnswerByKey(key string) (*Answer, error)
+	getEventsHistory(key string) ([]Event, error)
+}
+
+// implementation
+
 type AnswerUseCase struct {
 	db AnswersDb
 }
@@ -90,4 +100,12 @@ func (u AnswerUseCase) deleteAnswer(key string) error {
 		return err
 	}
 	return nil
+}
+
+func (u AnswerUseCase) getAnswerByKey(key string) (*Answer, error) {
+	return u.db.getAnswerByKey(key)
+}
+
+func (u AnswerUseCase) getEventsHistory(key string) ([]Event, error) {
+	return u.db.getEventsHistory(key)
 }
