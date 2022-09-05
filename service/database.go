@@ -52,10 +52,18 @@ type MongoAnswersDb struct {
 }
 
 func InitDb(URI string) (*MongoAnswersDb, error) {
+	log.Println("db: connecting to ", URI)
 	client, err := mongo.Connect(context.TODO(), options.Client().ApplyURI(URI))
 	if err != nil {
 		return nil, err
 	}
+
+	err = client.Ping(context.TODO(), nil)
+
+	if err != nil {
+		return nil, err
+	}
+
 	return &MongoAnswersDb{
 		client: client,
 	}, nil

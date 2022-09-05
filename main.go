@@ -1,8 +1,9 @@
 package main
 
 import (
-	"flag"
 	"log"
+
+	"github.com/namsral/flag"
 
 	"github.com/rehacktive/qaservice/service"
 )
@@ -14,6 +15,8 @@ const (
 
 func main() {
 	var host string
+
+	log.Println("service starting...")
 
 	flag.StringVar(&host, envHost, defaultMongoLocal, "host:port for postgres")
 
