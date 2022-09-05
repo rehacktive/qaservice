@@ -18,7 +18,7 @@ func main() {
 
 	log.Println("service starting...")
 
-	flag.StringVar(&host, envHost, defaultMongoLocal, "host:port for postgres")
+	flag.StringVar(&host, envHost, defaultMongoLocal, "host:port for mongodb")
 
 	flag.Parse()
 

@@ -2,13 +2,17 @@ package service
 
 import "testing"
 
-func TestCreateAnswerSuccess(t *testing.T) {
-	usecase := AnswerUseCase{
+func getUseCase() AnswerUseCase {
+	return AnswerUseCase{
 		db: &MockedDatabase{
 			currentAnswers: make(map[string]*Answer),
 			events:         make([]Event, 0),
 		},
 	}
+}
+
+func TestCreateAnswerSuccess(t *testing.T) {
+	usecase := getUseCase()
 
 	id, err := usecase.createAnswer(Answer{
 		Key:   "name",
@@ -29,12 +33,7 @@ func TestCreateAnswerSuccess(t *testing.T) {
 }
 
 func TestCreateAnswerTwiceFail(t *testing.T) {
-	usecase := AnswerUseCase{
-		db: &MockedDatabase{
-			currentAnswers: make(map[string]*Answer),
-			events:         make([]Event, 0),
-		},
-	}
+	usecase := getUseCase()
 
 	_, _ = usecase.createAnswer(Answer{
 		Key:   "name",
@@ -52,12 +51,7 @@ func TestCreateAnswerTwiceFail(t *testing.T) {
 }
 
 func TestUpdateAnswerSuccess(t *testing.T) {
-	usecase := AnswerUseCase{
-		db: &MockedDatabase{
-			currentAnswers: make(map[string]*Answer),
-			events:         make([]Event, 0),
-		},
-	}
+	usecase := getUseCase()
 
 	_, _ = usecase.createAnswer(Answer{
 		Key:   "name",
@@ -79,12 +73,7 @@ func TestUpdateAnswerSuccess(t *testing.T) {
 }
 
 func TestUpdateAnswerNotExistingFailure(t *testing.T) {
-	usecase := AnswerUseCase{
-		db: &MockedDatabase{
-			currentAnswers: make(map[string]*Answer),
-			events:         make([]Event, 0),
-		},
-	}
+	usecase := getUseCase()
 
 	err := usecase.updateAnswer(Answer{
 		Key:   "name",
@@ -96,12 +85,7 @@ func TestUpdateAnswerNotExistingFailure(t *testing.T) {
 }
 
 func TestDeleteAnswerSuccess(t *testing.T) {
-	usecase := AnswerUseCase{
-		db: &MockedDatabase{
-			currentAnswers: make(map[string]*Answer),
-			events:         make([]Event, 0),
-		},
-	}
+	usecase := getUseCase()
 
 	_, _ = usecase.createAnswer(Answer{
 		Key:   "name",
@@ -120,12 +104,7 @@ func TestDeleteAnswerSuccess(t *testing.T) {
 }
 
 func TestDeleteAnswerNotExistingFailure(t *testing.T) {
-	usecase := AnswerUseCase{
-		db: &MockedDatabase{
-			currentAnswers: make(map[string]*Answer),
-			events:         make([]Event, 0),
-		},
-	}
+	usecase := getUseCase()
 
 	err := usecase.deleteAnswer("name")
 
@@ -135,12 +114,7 @@ func TestDeleteAnswerNotExistingFailure(t *testing.T) {
 }
 
 func TestEventsHistory(t *testing.T) {
-	usecase := AnswerUseCase{
-		db: &MockedDatabase{
-			currentAnswers: make(map[string]*Answer),
-			events:         make([]Event, 0),
-		},
-	}
+	usecase := getUseCase()
 
 	_, _ = usecase.createAnswer(Answer{
 		Key:   "name",
