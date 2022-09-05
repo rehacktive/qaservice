@@ -1,6 +1,6 @@
 # QuestionAnswers Service
 
-## Test it
+## Run it
 
 Run the entire project (service + mongo + mongo express):
 
@@ -65,3 +65,12 @@ go run main.go
   "value": "jack"
 }
 ```
+
+## A sample unit test
+
+A sample unit test for the usecase has been added.
+
+## Some integration tests
+
+Some integration tests using docker compose with testcontainers are implemented.
+You can find them in `service/integration_test.go` and run `TestIntegration` (it could take a while).
