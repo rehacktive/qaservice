@@ -53,12 +53,12 @@ type MongoAnswersDb struct {
 
 func InitDb(URI string) (*MongoAnswersDb, error) {
 	log.Println("db: connecting to ", URI)
-	client, err := mongo.Connect(context.TODO(), options.Client().ApplyURI(URI))
+	client, err := mongo.Connect(context.Background(), options.Client().ApplyURI(URI))
 	if err != nil {
 		return nil, err
 	}
 
-	err = client.Ping(context.TODO(), nil)
+	err = client.Ping(context.Background(), nil)
 
 	if err != nil {
 		return nil, err
@@ -72,7 +72,7 @@ func InitDb(URI string) (*MongoAnswersDb, error) {
 func (m *MongoAnswersDb) createAnswer(a Answer) (string, error) {
 	c := m.client.Database(database).Collection(answersCollection)
 
-	res, err := c.InsertOne(context.TODO(), a)
+	res, err := c.InsertOne(context.Background(), a)
 	if err != nil {
 		return "", err
 	}
@@ -84,7 +84,7 @@ func (m *MongoAnswersDb) updateAnswer(id string, a Answer) error {
 
 	mongoid, _ := primitive.ObjectIDFromHex(id)
 	_, err := c.UpdateOne(
-		context.TODO(),
+		context.Background(),
 		bson.M{"_id": mongoid},
 		bson.D{
 			{Key: "$set", Value: bson.M{"key": a.Key}},
@@ -101,7 +101,7 @@ func (m *MongoAnswersDb) getAnswerByKey(key string) (*Answer, error) {
 	c := m.client.Database(database).Collection(answersCollection)
 
 	var answer Answer
-	if err := c.FindOne(context.TODO(), bson.M{"key": key}).Decode(&answer); err != nil {
+	if err := c.FindOne(context.Background(), bson.M{"key": key}).Decode(&answer); err != nil {
 		return nil, err
 	}
 	return &answer, nil
@@ -112,7 +112,7 @@ func (m *MongoAnswersDb) deleteAnswer(id string) error {
 
 	mongoid, _ := primitive.ObjectIDFromHex(id)
 
-	_, err := c.DeleteOne(context.TODO(), bson.M{"_id": mongoid})
+	_, err := c.DeleteOne(context.Background(), bson.M{"_id": mongoid})
 	if err != nil {
 		return err
 	}
@@ -123,12 +123,12 @@ func (m *MongoAnswersDb) getEventsHistory(key string) ([]Event, error) {
 	c := m.client.Database(database).Collection(eventsCollection)
 
 	var events []Event
-	contactCursor, err := c.Find(context.TODO(), bson.M{"data.key": key})
+	contactCursor, err := c.Find(context.Background(), bson.M{"data.key": key})
 	if err != nil {
 		return nil, err
 	}
 
-	if err = contactCursor.All(context.TODO(), &events); err != nil {
+	if err = contactCursor.All(context.Background(), &events); err != nil {
 		return nil, err
 	}
 	return events, nil
@@ -137,7 +137,7 @@ func (m *MongoAnswersDb) getEventsHistory(key string) ([]Event, error) {
 func (m *MongoAnswersDb) storeEvent(event Event) error {
 	c := m.client.Database(database).Collection(eventsCollection)
 
-	_, err := c.InsertOne(context.TODO(), event)
+	_, err := c.InsertOne(context.Background(), event)
 	if err != nil {
 		return err
 	}
