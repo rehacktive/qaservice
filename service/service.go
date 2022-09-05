@@ -26,8 +26,8 @@ func InitService(dbInstance AnswersDb) *Service {
 }
 
 func (srv Service) Start() {
-	srv.router.HandleFunc("/answers", srv.answersHandler).Methods(http.MethodPost, http.MethodPut, http.MethodDelete)
-	srv.router.HandleFunc("/answers/{key}", srv.answersFetchHandler).Methods(http.MethodGet)
+	srv.router.HandleFunc("/answers", srv.answersHandler).Methods(http.MethodPost, http.MethodPut)
+	srv.router.HandleFunc("/answers/{key}", srv.answersFetchHandler).Methods(http.MethodGet, http.MethodDelete)
 	srv.router.HandleFunc("/events/{key}", srv.eventsHandler).Methods(http.MethodGet)
 
 	server := &http.Server{Addr: ":8880", Handler: srv.router}
